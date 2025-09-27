@@ -1,30 +1,50 @@
+/**
+ * @file Renders a card for a single pinned world clock.
+ */
 
 import React, { useMemo } from 'react';
 import { Clock, Settings } from '../types';
 import { formatTime, formatDate, getHourInTimezone } from '../utils/time';
 
 interface ClockCardProps {
+    /** The current time Date object. */
     now: Date;
+    /** The clock data for this specific card. */
     clock: Clock;
+    /** The main clock data, used for calculating time differences. */
     mainClock: Clock | null;
+    /** Callback to remove this clock from the pinned list. */
     removeClock: (tz: string) => void;
+    /** User settings for formatting. */
     settings: Settings;
+    /** The translation object. */
     t: any;
 }
 
+/**
+ * The ClockCard component displays the time, date, and other information for a single timezone
+ * that the user has pinned. It shows a day/night icon and calculates the time difference
+ * relative to the user's main clock.
+ */
 const ClockCard: React.FC<ClockCardProps> = ({now, clock, mainClock, removeClock, settings, t}) => {
+    // Determine the local hour in the clock's timezone to decide if it's day or night.
     const hour = getHourInTimezone(now, clock.timezone);
     const isDay = hour >= 6 && hour < 18;
 
+    // Memoized calculation for the time difference string.
+    // This avoids recalculating on every render unless the clock or mainClock data changes.
     const timeDifference = useMemo(() => {
+        // Handle cases where the API call for this clock failed.
         if (clock.apiFailed) {
             return 'Could not fetch time. Please refresh.';
         }
         
+        // If data is missing for calculation, show a simpler display.
         if (!mainClock || typeof clock.raw_offset !== 'number' || typeof mainClock.raw_offset !== 'number' || !clock.utc_offset) {
             return `${clock.abbreviation || ''} ${clock.utc_offset || clock.timezone}`;
         }
 
+        // Calculate the difference in hours, accounting for DST.
         const mainOffset = mainClock.raw_offset + mainClock.dst_offset;
         const clockOffset = clock.raw_offset + clock.dst_offset;
         const diffSeconds = clockOffset - mainOffset;
@@ -35,6 +55,7 @@ const ClockCard: React.FC<ClockCardProps> = ({now, clock, mainClock, removeClock
             diffText = t.time.same;
         } else {
             const absHours = Math.abs(diffHours);
+            // Nicely format fractional hours like .5, .25, .75
             const hoursDisplay = absHours.toString().replace('.5', '½').replace('.25', '¼').replace('.75', '¾');
             const hourWord = absHours === 1 ? t.time.hour : t.time.hours;
             diffText = `${hoursDisplay} ${hourWord} ${diffHours > 0 ? t.time.ahead : t.time.behind}`;

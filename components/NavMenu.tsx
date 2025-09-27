@@ -1,16 +1,27 @@
-
+/**
+ * @file Renders the full-screen navigation menu for mobile devices.
+ */
 import React from 'react';
 import { Page } from '../types';
 import { CloseIcon } from './Icons';
 
 interface NavMenuProps {
+    /** Whether the menu is open. */
     isOpen: boolean;
+    /** Callback to close the menu. */
     onClose: () => void;
+    /** The currently active page. */
     currentPage: Page;
+    /** Function to change the current page. */
     setCurrentPage: (page: Page) => void;
 }
 
+/**
+ * The NavMenu component provides a full-screen overlay menu with links to the main pages.
+ * It is only intended for use on smaller screens where the main header navigation is hidden.
+ */
 const NavMenu: React.FC<NavMenuProps> = ({ isOpen, onClose, currentPage, setCurrentPage }) => {
+    // Render nothing if the menu is not open.
     if (!isOpen) return null;
 
     return (
@@ -20,7 +31,12 @@ const NavMenu: React.FC<NavMenuProps> = ({ isOpen, onClose, currentPage, setCurr
                 <a 
                     key={key} 
                     href="#" 
-                    onClick={(e) => { e.stopPropagation(); setCurrentPage(Page[key]); onClose(); }} 
+                    onClick={(e) => { 
+                        // Stop propagation to prevent the background click from also firing.
+                        e.stopPropagation(); 
+                        setCurrentPage(Page[key]); 
+                        onClose(); 
+                    }} 
                     className={`text-3xl font-bold text-white transition-colors ${currentPage === Page[key] ? 'text-accent-dark' : 'hover:text-accent-dark'}`}
                 >
                     {Page[key]}

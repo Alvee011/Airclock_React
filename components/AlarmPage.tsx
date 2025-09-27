@@ -1,3 +1,6 @@
+/**
+ * @file Implements the Alarm page component.
+ */
 
 import React, { useState, useCallback } from 'react';
 import { Alarm } from '../types';
@@ -5,18 +8,28 @@ import { useInterval } from '../hooks/useInterval';
 import ToggleSwitch from './ToggleSwitch';
 
 interface AlarmPageProps {
+    /** The array of current alarms. */
     alarms: Alarm[];
+    /** Function to update the alarms state. */
     setAlarms: React.Dispatch<React.SetStateAction<Alarm[]>>;
+    /** The translation object. */
     t: any;
 }
 
+/**
+ * The AlarmPage component allows users to add, manage, and delete alarms.
+ * It also displays a live countdown for each enabled alarm.
+ */
 const AlarmPage: React.FC<AlarmPageProps> = ({ alarms, setAlarms, t }) => {
+    // State for the new alarm form inputs.
     const [time, setTime] = useState('');
     const [label, setLabel] = useState('');
 
+    // A state that updates every second to re-render the countdown timers.
     const [now, setNow] = useState(new Date());
-    useInterval(() => setNow(new Date()), 1000); // For countdown
+    useInterval(() => setNow(new Date()), 1000);
 
+    // Handles the submission of the new alarm form.
     const handleAddAlarm = useCallback((e: React.FormEvent) => {
         e.preventDefault();
         if (!time) return;
@@ -27,24 +40,30 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ alarms, setAlarms, t }) => {
             enabled: true,
             triggeredToday: false,
         };
+        // Add the new alarm and sort the list by time.
         setAlarms(prev => [...prev, newAlarm].sort((a,b) => a.time.localeCompare(b.time)));
+        // Reset the form fields.
         setTime('');
         setLabel('');
     }, [time, label, setAlarms]);
 
+    // Toggles the 'enabled' state of a specific alarm.
     const handleToggleAlarm = (id: number) => {
         setAlarms(alarms.map(a => a.id === id ? {...a, enabled: !a.enabled} : a));
     };
 
+    // Deletes an alarm from the list.
     const handleDeleteAlarm = (id: number) => {
         setAlarms(alarms.filter(a => a.id !== id));
     };
 
+    // Calculates the time remaining until the next occurrence of an alarm.
     const getCountdown = (alarmTime: string) => {
         const [hours, minutes] = alarmTime.split(':').map(Number);
         const alarmDate = new Date(now);
         alarmDate.setHours(hours, minutes, 0, 0);
 
+        // If the alarm time for today has already passed, set it for tomorrow.
         if (alarmDate < now) {
             alarmDate.setDate(alarmDate.getDate() + 1);
         }
@@ -60,6 +79,7 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ alarms, setAlarms, t }) => {
     return (
         <div className="max-w-xl mx-auto p-8 bg-white dark:bg-card-dark rounded-2xl shadow-lg">
             <h2 className="text-3xl font-bold text-center mb-6">Alarm</h2>
+            {/* Form for adding a new alarm */}
             <form onSubmit={handleAddAlarm} className="flex gap-4 mb-8">
                 <input 
                     type="time" 
@@ -77,6 +97,7 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ alarms, setAlarms, t }) => {
                 />
                 <button type="submit" className="px-6 py-3 font-semibold rounded-lg bg-accent-light dark:bg-accent-dark text-white hover:opacity-90 transition-opacity">Add</button>
             </form>
+            {/* List of existing alarms */}
             <ul className="space-y-4">
                 {alarms.map(alarm => (
                     <li key={alarm.id} className={`p-4 rounded-lg transition-opacity duration-300 ${alarm.enabled ? '' : 'opacity-50'}`}>

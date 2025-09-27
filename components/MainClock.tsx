@@ -1,16 +1,28 @@
+/**
+ * @file Renders the primary, large clock display on the main page.
+ */
 
 import React from 'react';
 import { Clock, Settings } from '../types';
 import { formatTime, formatDate } from '../utils/time';
 
 interface MainClockProps {
+    /** The current time Date object, updated every second. */
     now: Date;
+    /** The clock data for the main timezone. */
     mainClock: Clock;
+    /** User settings for formatting. */
     settings: Settings;
+    /** Callback to trigger the full-screen clock view. */
     onFullscreen: () => void;
+    /** Children elements, typically the FocusSounds component. */
     children: React.ReactNode;
 }
 
+/**
+ * The MainClock component displays the time and date for the user's primary timezone in a large, prominent format.
+ * Clicking on it activates the full-screen view. It also serves as a container for child components like FocusSounds.
+ */
 const MainClock: React.FC<MainClockProps> = ({ now, mainClock, settings, onFullscreen, children }) => {
     return (
         <div 
@@ -21,6 +33,7 @@ const MainClock: React.FC<MainClockProps> = ({ now, mainClock, settings, onFulls
                 <p className="mt-2 text-lg sm:text-xl opacity-70">{formatDate(now, mainClock, settings)}</p>
                 <p className="mt-1 text-sm opacity-50">{mainClock.timezone.replace(/_/g, ' ')}</p>
             </div>
+            {/* Renders child components passed to it, like the FocusSounds buttons */}
             {children}
         </div>
     );

@@ -1,0 +1,13 @@
+{
+  "framework": "vite",
+  "build": {
+    "command": "npm install && npm run build"
+  },
+  "outputDirectory": "build",
+  "rewrites": [
+    {
+      "source": "/((?!api/|assets/|_next/|favicon.ico|sw.js).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
