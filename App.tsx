@@ -16,6 +16,7 @@ import Header from './components/Header';
 import NavMenu from './components/NavMenu';
 import AppFooter from './components/AppFooter';
 import SettingsModal from './components/SettingsModal';
+import { Modal } from './components/Modal';
 import { getHourInTimezone } from './utils/time';
 
 /**
@@ -51,6 +52,7 @@ const App: React.FC = () => {
     // UI state for managing the visibility of modals and menus.
     const [isNavOpen, setIsNavOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [resetConfirm, setResetConfirm] = useState({ isOpen: false, step: 1 });
 
     // State for calendar notes and alarms.
     const [notes, setNotes] = useState<Notes>({});
@@ -191,14 +193,27 @@ const App: React.FC = () => {
         setPinnedClocks(prev => prev.filter(c => c.timezone !== timezone));
     }, []);
 
-    // Function to reset all application data.
+    // --- RESET LOGIC ---
     const handleReset = () => {
-        if (window.confirm(t.alerts.resetConfirm)) {
-            localStorage.removeItem('airclockState');
-            window.location.reload();
+        setResetConfirm({ isOpen: true, step: 1 });
+    };
+
+    const handleConfirmReset = () => {
+        if (resetConfirm.step === 1) {
+            setPinnedClocks([]);
+            setResetConfirm({ isOpen: true, step: 2 }); // Move to step 2
+        } else if (resetConfirm.step === 2) {
+            setNotes({});
+            setAlarms([]);
+            setResetConfirm({ isOpen: false, step: 1 }); // Close and reset
         }
     };
-    
+
+    const handleDeclineReset = () => {
+        // If they decline step 2, we just close the modal. Clocks are already gone.
+        setResetConfirm({ isOpen: false, step: 1 });
+    };
+
     // Automatic self-healing for failed clock cards, checking every 5 seconds.
     useInterval(refreshFailedClocks, 5000);
 
@@ -259,6 +274,28 @@ const App: React.FC = () => {
                 setSettings={setSettings}
                 t={t}
             />
+
+            <Modal isOpen={resetConfirm.isOpen} onClose={handleDeclineReset} maxWidth="max-w-md">
+                {resetConfirm.step === 1 ? (
+                    <div>
+                        <h2 className="text-xl font-bold mb-4">Reset Clocks</h2>
+                        <p className="mb-6">{t.alerts.resetClocksConfirm}</p>
+                        <div className="flex justify-end gap-4">
+                            <button onClick={handleDeclineReset} className="px-4 py-2 font-semibold rounded-lg bg-gray-200 dark:bg-neutral-700 hover:bg-gray-300 dark:hover:bg-neutral-600 transition-colors">Cancel</button>
+                            <button onClick={handleConfirmReset} className="px-4 py-2 font-semibold rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors">Confirm</button>
+                        </div>
+                    </div>
+                ) : (
+                    <div>
+                        <h2 className="text-xl font-bold mb-4">Reset Notes & Alarms?</h2>
+                        <p className="mb-6">{t.alerts.resetNotesAlarmsConfirm}</p>
+                        <div className="flex justify-end gap-4">
+                            <button onClick={handleDeclineReset} className="px-4 py-2 font-semibold rounded-lg bg-gray-200 dark:bg-neutral-700 hover:bg-gray-300 dark:hover:bg-neutral-600 transition-colors">No, Keep Them</button>
+                            <button onClick={handleConfirmReset} className="px-4 py-2 font-semibold rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors">Yes, Remove All</button>
+                        </div>
+                    </div>
+                )}
+            </Modal>
         </div>
     );
 };
