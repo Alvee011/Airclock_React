@@ -1,0 +1,5 @@
+{
+  "name": "AirClock",
+  "description": "An elegant world clock application to keep track of time across different cities and timezones, featuring a stopwatch, timer, alarm, calendar, and notes.",
+  "requestFramePermissions": []
+}
