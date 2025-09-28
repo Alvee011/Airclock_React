@@ -1,10 +1,13 @@
 {
+  "homepage": "https://alvee011.github.io/Airclock_React/",
   "name": "airclock-react",
   "private": true,
   "version": "1.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "react": "^19.1.0",
