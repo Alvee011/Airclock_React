@@ -7,8 +7,8 @@ import { Page } from '../types';
 import { MenuIcon, SettingsIcon } from './Icons';
 
 // Paths to the logo assets, now absolute to the deployment subdirectory.
-const logoBlackH = '/Airclock_React/assets/images/LogoBlack_H.png';
-const logoWhiteH = '/Airclock_React/assets/images/LogoWhite_H.png';
+const logoBlackH = '/Airclock_React/images/LOGOBlackH.png';
+const logoWhiteH = '/Airclock_React/images/LOGOWhiteH.png';
 
 interface HeaderProps {
     /** The currently active page. */

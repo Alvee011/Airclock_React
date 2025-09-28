@@ -5,8 +5,8 @@ import React from 'react';
 import QuoteDisplay from './QuoteDisplay';
 
 // Paths to the logo assets, now absolute to the deployment subdirectory.
-const logoBlack = '/Airclock_React/assets/images/logoblack.png';
-const logoWhite = '/Airclock_React/assets/images/logowhite.png';
+const logoBlack = '/Airclock_React/images/logoblack.png';
+const logoWhite = '/Airclock_React/images/logowhite.png';
 
 /**
  * The AppFooter component displays a "quote of the day" and standard footer content

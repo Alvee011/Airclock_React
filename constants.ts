@@ -503,7 +503,7 @@ export const CITY_DATA = [
 
 // A list of popular cities for quick selection. The 'size' property can be used for styling, e.g., font size.
 export const POPULAR_CITIES = [
-    { name: "Abu Dhabi", size: 2, timezone: "Asia/Dubai" }, { name: "Amsterdam", size: 3, timezone: "Europe/Amsterdam" },
+    { name: "Abu Dhabi", size: 2, timezone: "Asia/Dubai" }, { name: "Dhaka", size: 3, timezone: "Asia/Dhaka" },
     { name: "Beijing", size: 5, timezone: "Asia/Shanghai" }, { name: "Berlin", size: 3, timezone: "Europe/Berlin" },
     { name: "Buenos Aires", size: 4, timezone: "America/Argentina/Buenos_Aires" }, { name: "Cairo", size: 3, timezone: "Africa/Cairo" }, { name: "Chicago", size: 4, timezone: "America/Chicago" }, { name: "Delhi", size: 5, timezone: "Asia/Kolkata" },
     { name: "Dubai", size: 4, timezone: "Asia/Dubai" }, { name: "Istanbul", size: 5, timezone: "Europe/Istanbul" }, 
